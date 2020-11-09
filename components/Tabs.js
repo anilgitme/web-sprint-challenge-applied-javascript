@@ -12,33 +12,25 @@
 
 import axios from 'axios'
 
-const topicsContainer = document.querySelector('.topics')
-    // console.log(topicsContainer)
 
-function topicsContent(data) { /// data represents an array as a argument
-    const divTab = document.createElement('div')
-    divTab.classList.add('tab')
-
-    data.forEach(ele => {
-        divTab.textContent = ele;
-    })
-    return divTab
-}
+const container = document.querySelector('.topics')
 
 
-axios.get('https://lambda-times-api.herokuapp.com/topics')
-    .then(results => {
-        const contents = Object.values(results.data);
-        // console.log(contents)
-        const array = [].concat.apply([], contents) //array to use as an arguement for the callback
-            // console.log(array)
 
-        array.map(data => {
-            topicsContainer.appendChild(topicsContent(array))
+axios.get("https://lambda-times-api.herokuapp.com/topics")
+    .then((results) => {
+        console.log(results.data.topics)
+            // console.log(results)
+        const tabArray = results.data.topics
+        tabArray.forEach((topic) => {
+            let div = document.createElement('div');
+            div.classList.add('tab');
+            container.appendChild(div); // adding created div each iteration to the markup
+            div.textContent = topic; // adding textcontent of each topic
+
         })
-
     })
-
-.catch(err => {
-    console.log('error accessing the data')
-})
+    .catch((err) => {
+        err = "error getting data"
+        console.log(err)
+    })

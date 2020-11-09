@@ -24,60 +24,73 @@
 const { default: Axios } = require("axios");
 
 
+axios.get("https://lambda-times-api.herokuapp.com/articles")
+    .then((results) => {
+        console.log(results);
+        const javascript = results.data.articles.javascript;
+        const bootstrap = results.data.articles.bootstrap;
+        const jquery = results.data.articles.jquery;
+        const node = results.data.articles.node;
+        const technology = results.data.articles.technology;
+        // console.log(node)
+        // console.log(javascript)
+        bootstrap.forEach((ele) => { //getting all the data from each object
+            cardMaker(ele);
+        });
+
+        javascript.forEach((ele) => {
+            cardMaker(ele);
+        });
+
+        jquery.forEach((ele) => {
+            cardMaker(ele);
+        });
+
+        node.forEach((ele) => {
+            cardMaker(ele);
+        });
+
+        technology.forEach((ele) => {
+            cardMaker(ele);
+        });
+    })
+    .catch((err) => {
+        err = 'error getting data'
+        console.log(err);
+    });
+
 const cardContainer = document.querySelector('.cards-container');
 
-function makeCards(data) {
-    const cardDiv = document.createElement('div');
-    const cardHeadline = document.createElement('div');
-    const h3 = document.createElement('h3')
-    const cardAuthor = document.createElement('div');
-    const cardImg = document.createElement('img');
-    const imgContainer = document.createElement('div');
-    const span = document.createElement('span');
 
-    cardDiv.classList.add('card');
-    cardHeadline.classList.add('headline');
-    cardAuthor.classList.add('author');
-    imgContainer.classList.add('img-container');
+function cardMaker(articles) {
+    const card = document.createElement("div");
+    const cardHeadline = document.createElement("div");
+    const authorDiv = document.createElement("div");
+    const imgContainer = document.createElement("div");
+    const cardImg = document.createElement("img");
+    const span = document.createElement("span");
+    const h4 = document.createElement('h4')
 
-    cardDiv.appendChild(cardHeadline);
-    cardHeadline.appendChild(cardAuthor);
-    cardHeadline.appendChild(h3);
-    cardAuthor.appendChild(imgContainer)
-    cardAuthor.appendChild(span);
+    card.appendChild(cardHeadline);
+    card.appendChild(authorDiv);
+    authorDiv.appendChild(imgContainer);
     imgContainer.appendChild(cardImg);
+    authorDiv.appendChild(span);
+    span.appendChild(h4)
+    cardContainer.appendChild(card);
+
+    card.className = "card"; //class names
+    authorDiv.className = "author";
+    cardHeadline.className = "headline";
+    imgContainer.className = "img-container";
+
+    h4.textContent = articles.authorName;
+    cardHeadline.textContent = articles.headline; // adding text
+    cardImg.src = articles.authorPhoto;
 
 
-    // data.forEach(element => {
-    //     h3.textContent = element.headline;
-    //     cardImg.src = element.authorPhoto;
-    //     span.textContent = element.authorName;
-    // })
-    for (let i = 0; i < data.length; i++) {
-        h3.textContent = data[i].headline;
-        cardImg.src = data[i].authorPhoto;
-        span.textContent = data[i].authorName;
-    }
-    cardDiv.addEventListener('click', (event) => {
-        console.log(data.headline)
-    })
-
-    return cardDiv
+    card.addEventListener("click", () => {
+        console.log(articles.headline);
+    });
+    return card
 }
-
-
-
-axios.get('https://lambda-times-api.herokuapp.com/articles')
-    .then(results => {
-        // console.log(results)
-        const contents = Object.values(results.data.articles)
-            // console.log(contents);
-        const concatContents = [].concat.apply([], contents)
-            // console.log(concatContents)
-        concatContents.map(ele => {
-            cardContainer.appendChild(makeCards(concatContents))
-        })
-    })
-    .catch(error => {
-        console.log("an error occured")
-    })
